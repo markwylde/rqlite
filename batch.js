@@ -1,5 +1,3 @@
-const righto = require('righto');
-
 function batch (connection, sql, listOfParameters, callback) {
   if (arguments.length === 3) {
     callback = listOfParameters;
@@ -10,7 +8,7 @@ function batch (connection, sql, listOfParameters, callback) {
     listOfParameters = [];
   }
 
-  throw new Error('batch not implemented yet')
+  throw new Error('batch not implemented yet');
 }
 
 module.exports = batch;
