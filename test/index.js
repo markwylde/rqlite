@@ -12,6 +12,7 @@ const close = require('../close');
 const sharedInstance = require('./helpers/sharedInstance');
 
 tape.onFinish(() => {
+  console.log('Tests finished')
   sharedInstance.stop();
 });
 
