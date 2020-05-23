@@ -14,7 +14,7 @@ const sharedInstance = require('./helpers/sharedInstance');
 tape.onFinish(() => {
   console.log('Tests finished')
   sharedInstance.stop();
-  process.quit(0);
+  process.exit(0);
 });
 
 // test('launch', function * (t) {
