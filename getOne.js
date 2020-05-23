@@ -1,4 +1,5 @@
 const callarest = require('callarest/json');
+const sqlString = require('sqlstring');
 
 function getAll (connection, sql, parameters, callback) {
   if (arguments.length === 3) {
@@ -9,6 +10,8 @@ function getAll (connection, sql, parameters, callback) {
   if (!parameters) {
     parameters = [];
   }
+
+  sql = sqlString.format(sql, parameters);
 
   callarest({
     url: `${connection.url}/db/query?q=${sql}&pretty&timings`

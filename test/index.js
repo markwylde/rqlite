@@ -125,6 +125,23 @@ test('getAll: one record', function * (t) {
   yield righto(execute, connection, 'DROP TABLE lorem');
 });
 
+test('getAll: sql injection', function * (t) {
+  t.plan(1);
+
+  const connection = yield righto(connect, 'http://localhost:4001');
+  yield righto(execute, connection, 'CREATE TABLE lorem (info TEXT)');
+
+  yield righto(execute, connection, `
+    INSERT INTO lorem (info) VALUES ('test')
+  `);
+
+  const rows = yield righto(getAll, connection, 'SELECT * FROM lorem WHERE info = ?', ['test']);
+
+  t.deepEqual(rows, [{ info: 'test' }]);
+
+  yield righto(execute, connection, 'DROP TABLE lorem');
+});
+
 test('getAll: multiple records', function * (t) {
   t.plan(1);
 

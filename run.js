@@ -1,3 +1,4 @@
+const sqlString = require('sqlstring');
 const callarest = require('callarest/json');
 
 function run (connection, sql, parameters, callback) {
@@ -9,6 +10,8 @@ function run (connection, sql, parameters, callback) {
   if (!parameters) {
     parameters = [];
   }
+
+  sql = sqlString.format(sql, parameters);
 
   callarest({
     method: 'post',
