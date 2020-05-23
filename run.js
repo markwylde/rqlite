@@ -16,7 +16,7 @@ function run (connection, sql, parameters, callback) {
   callarest({
     method: 'post',
     body: [sql],
-    url: `${connection.url}/db/query?q=SELECT%20date(%27now%27)&pretty&timings`
+    url: `${connection.url}/db/execute?pretty&timings`
   }, function (error, rest) {
     if (error) {
       return callback(error);
