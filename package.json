@@ -27,7 +27,8 @@
     "chalk": "^4.0.0",
     "follow-redirects": "^1.11.0",
     "righto": "^6.1.0",
-    "sqlstring": "^2.3.2"
+    "sqlstring": "^2.3.2",
+    "tar": "^6.0.2"
   },
   "devDependencies": {
     "c8": "^6.0.1",
