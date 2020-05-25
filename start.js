@@ -75,6 +75,9 @@ function getFilesInTarball (file, callback) {
 }
 
 function getBinPath (options, callback) {
+  if (options.rqliteBinPath) {
+    return callback(null, options.rqliteBinPath)
+  }
   getFilesInTarball(options.tarballPath, function (error, filePaths) {
     if (error) {
       return callback(error);
@@ -149,6 +152,10 @@ function start (options, callback) {
   options.raftAddr = options.raftAddr || 'localhost:4002';
   options.storage = options.storage || '~/node';
   options.silent = options.silent !== false;
+
+  if (options.rqliteBinPath) {
+    return execute(options, callback);
+  }
 
   fileExists(options.tarballPath, function (error, exists) {
     if (error) {
