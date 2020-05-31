@@ -51,7 +51,8 @@ function download (options, callback) {
   const extractPath = options.extractPath;
 
   const createdTargetDirectory = righto(fs.mkdir, options.extractPath);
-  const alwaysCreatedTargetDirectory = righto.handle(createdTargetDirectory, function (_, callback) {
+  const alwaysCreatedTargetDirectory = righto.handle(createdTargetDirectory, function (error, callback) {
+    console.log(error)
     callback();
   });
 
