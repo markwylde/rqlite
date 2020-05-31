@@ -14,7 +14,9 @@ const url = 'https://api.github.com/repos/rqlite/rqlite/releases/latest';
 
 var children = [];
 process.on('exit', function () {
-  console.log('killing', children.length, 'rqlite processes');
+  if (children.length > 0) {
+    console.log('killing', children.length, 'rqlite processes');
+  }
   children.forEach(function (child) {
     child.kill();
   });
