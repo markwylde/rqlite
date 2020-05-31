@@ -96,7 +96,6 @@ function getBinPath (options, callback) {
     if (!rqliteBin[0]) {
       return callback(new Error('rqlited was not found in tarball'));
     }
-    console.log(path.join(options.extractPath, rqliteBin[0]));
     callback(null, path.join(options.extractPath, rqliteBin[0]));
   });
 }
