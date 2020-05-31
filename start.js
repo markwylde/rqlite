@@ -174,6 +174,9 @@ function start (options, callback) {
     }
     if (!exists) {
       download(options, function (error, result) {
+        console.log(result)
+        console.log('/tmp ===', fs.readdirSync('/tmp'))
+        console.log('/tmp/rqlite ===', fs.readdirSync('/tmp/rqlite'))
         if (error) {
           return callback(error);
         }
