@@ -61,7 +61,7 @@ testResults(function (error, results) {
 ```
 
 ## Functions signatures
-### launch -> {httpAddr, raftAddr, join} -> (error, connection)
+### start -> {httpAddr, raftAddr, join} -> (error, connection)
 ### connect -> filename -> [mode] -> (error, connection)
 ### run -> connection -> sql -> [parameters] -> (error, result={lastId, changes})
 ### getAll -> connection -> sql -> (error, rows)
