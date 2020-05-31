@@ -37,7 +37,8 @@ function download (options, callback) {
   const releases = righto(callarest, {
     url,
     headers: {
-      'User-Agent': 'nodejs'
+      'User-Agent': 'nodejs',
+      Authorization: process.env.GITHUB_TOKEN ? 'token ' + process.env.GITHUB_TOKEN : null
     }
   });
 
