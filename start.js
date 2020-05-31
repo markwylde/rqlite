@@ -52,7 +52,9 @@ function download (options, callback) {
 
   const createdTargetDirectory = righto(fs.mkdir, options.extractPath);
   const alwaysCreatedTargetDirectory = righto.handle(createdTargetDirectory, function (error, callback) {
-    console.log(error)
+    if (error) {
+      console.log(error)
+    }
     callback();
   });
 
@@ -175,9 +177,11 @@ function start (options, callback) {
     }
     if (!exists) {
       download(options, function (error, result) {
-        console.log(result)
-        console.log('/tmp ===', fs.readdirSync('/tmp'))
-        console.log('/tmp/rqlite ===', fs.readdirSync('/tmp/rqlite'))
+        if (process.env.DEBUG) {
+          console.log(result)
+          console.log('/tmp ===', fs.readdirSync('/tmp'))
+          console.log('/tmp/rqlite ===', fs.readdirSync('/tmp/rqlite'))
+        }
         if (error) {
           return callback(error);
         }
