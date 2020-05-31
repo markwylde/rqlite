@@ -109,7 +109,7 @@ function execute (options, callback) {
       );
     }
     const cmd = `
-      ${binPath} -http-addr ${options.httpAddr} -raft-addr ${options.raftAddr} ${options.storage}
+      ${binPath} -http-addr ${options.httpAddr} -raft-addr ${options.raftAddr} ${options.join ? `-join ${options.join}` : ''} ${options.storage}
     `.trim();
     console.log(chalk.cyan('Executing ' + cmd));
     const ls = spawn('sh', ['-c', cmd]);
