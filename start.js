@@ -33,6 +33,7 @@ function fileExists (file, callback) {
 }
 
 function download (options, callback) {
+  console.log('downloading rqlite...');
   const releases = righto(callarest, {
     url,
     headers: {
@@ -48,6 +49,11 @@ function download (options, callback) {
   const downloadDestination = options.tarballPath;
   const extractPath = options.extractPath;
 
+  const createdTargetDirectory = righto(fs.mkdir, options.extractPath);
+  const alwaysCreatedTargetDirectory = righto.handle(createdTargetDirectory, function (_, callback) {
+    callback();
+  });
+
   const extractionResult = righto(extractTarballDownload,
     downloadUrl,
     downloadDestination,
@@ -57,7 +63,8 @@ function download (options, callback) {
       },
       httpAgent: http,
       httpsAgent: https
-    }
+    },
+    righto.after(alwaysCreatedTargetDirectory)
   );
 
   extractionResult(callback);
@@ -66,7 +73,10 @@ function download (options, callback) {
 function getFilesInTarball (file, callback) {
   const downloadDestination = file;
   const entries = [];
-  tar.t({ file: downloadDestination, onentry: i => entries.push(i.path) }, function (error) {
+  tar.t({
+    file: downloadDestination,
+    onentry: i => entries.push(i.path.split('/').slice(1).join('/'))
+  }, function (error) {
     if (error) {
       return callback(error);
     }
@@ -76,16 +86,17 @@ function getFilesInTarball (file, callback) {
 
 function getBinPath (options, callback) {
   if (options.rqliteBinPath) {
-    return callback(null, options.rqliteBinPath)
+    return callback(null, options.rqliteBinPath);
   }
   getFilesInTarball(options.tarballPath, function (error, filePaths) {
     if (error) {
       return callback(error);
     }
-    const rqliteBin = filePaths.filter(filePath => filePath.endsWith('/rqlited'));
+    const rqliteBin = filePaths.filter(filePath => filePath.endsWith('rqlited'));
     if (!rqliteBin[0]) {
       return callback(new Error('rqlited was not found in tarball'));
     }
+    console.log(path.join(options.extractPath, rqliteBin[0]));
     callback(null, path.join(options.extractPath, rqliteBin[0]));
   });
 }
@@ -146,7 +157,7 @@ function execute (options, callback) {
 function start (options, callback) {
   options = options || {};
   options.tarballPath = options.tarballPath || '/tmp/rqlite.tar.gz';
-  options.extractPath = options.extractPath || '/tmp';
+  options.extractPath = options.extractPath || '/tmp/rqlite';
 
   options.httpAddr = options.httpAddr || 'localhost:4001';
   options.raftAddr = options.raftAddr || 'localhost:4002';
