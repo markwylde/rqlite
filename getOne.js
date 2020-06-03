@@ -1,5 +1,6 @@
 const callarest = require('callarest/json');
 const sqlString = require('sqlstring');
+const { http, https } = require('follow-redirects');
 
 function getAll (connection, sql, parameters, callback) {
   if (arguments.length === 3) {
@@ -14,7 +15,9 @@ function getAll (connection, sql, parameters, callback) {
   sql = sqlString.format(sql, parameters);
 
   callarest({
-    url: `${connection.url}/db/query?q=${sql}&pretty&timings`
+    url: `${connection.url}/db/query?q=${sql}&pretty&timings`,
+    httpAgent: http,
+    httpsAgent: https
   }, function (error, rest) {
     if (error) {
       return callback(error);
