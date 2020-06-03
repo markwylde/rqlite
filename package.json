@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "calladownload-extract": "^1.2.0",
-    "callarest": "^2.0.0",
+    "callarest": "^2.0.1",
     "chalk": "^4.0.0",
     "follow-redirects": "^1.11.0",
     "righto": "^6.1.1",
