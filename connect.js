@@ -7,6 +7,8 @@ function connect (url, options, callback) {
     options = {};
   }
 
+  options.errorStack = options.errorStack || (new Error('ss')).stack.split('\n').slice(1).join('\n');
+
   callarest({
     url: `${url}/db/query?q=SELECT%20date(%27now%27)&pretty&timings`,
     httpAgent: http,
@@ -24,8 +26,9 @@ function connect (url, options, callback) {
 
     if (error) {
       if (error.code === 'ECONNREFUSED') {
-        return callback(new Error('ECONNREFUSED: Could not connect to ' + url));
+        error = new Error('ECONNREFUSED: Could not connect to ' + url);
       }
+      error.stack = error.stack + '\n' + options.errorStack;
       return callback(error);
     }
 
@@ -34,7 +37,9 @@ function connect (url, options, callback) {
     }
 
     console.log('Body returned was: ', rest.body);
-    return callback(new Error('url does not look like an rqlite database'));
+    error = new Error('url does not look like an rqlite database');
+    error.stack = error.stack + '\n' + options.errorStack;
+    return callback(error);
   });
 }
 
