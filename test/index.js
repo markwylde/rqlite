@@ -17,6 +17,26 @@ tape.onFinish(() => {
   process.exit(0);
 });
 
+test('connect when not running', function * (t) {
+  t.plan(1);
+
+  connect('http://localhost:4001', function (error) {
+    t.equal(error.message, 'ECONNREFUSED: Could not connect to http://localhost:4001');
+  });
+});
+
+test('connect with retries when not running', function * (t) {
+  t.plan(3);
+
+  const startTime = Date.now();
+  connect('http://localhost:4001', { retries: 3, retryDelay: 100 }, function (error) {
+    const endTime = Date.now();
+    t.ok(endTime - startTime > 300, 'Took more than 300ms to fail');
+    t.ok(endTime - startTime > 300, 'Took less than 1000ms to fail');
+    t.equal(error.message, 'ECONNREFUSED: Could not connect to http://localhost:4001');
+  });
+});
+
 // test('launch', function * (t) {
 //   t.plan(1);
 
