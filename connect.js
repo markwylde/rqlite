@@ -7,6 +7,10 @@ function connect (url, options, callback) {
     options = {};
   }
 
+  if (typeof callback !== 'function') {
+    throw new Error('rqlite.connect requires a callback');
+  }
+
   options.errorStack = options.errorStack || (new Error('ss')).stack.split('\n').slice(1).join('\n');
 
   callarest({
@@ -15,6 +19,8 @@ function connect (url, options, callback) {
     httpsAgent: https
   }, function (error, rest) {
     if (error && options.retries > 0) {
+      options.onRetry && options.onRetry(options.retries);
+
       setTimeout(() => {
         connect(url, {
           ...options,

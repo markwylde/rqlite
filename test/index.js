@@ -37,6 +37,12 @@ test('connect with retries when not running', function * (t) {
   });
 });
 
+test('connect with retries with onRetry', function * (t) {
+  t.plan(1);
+
+  connect('http://localhost:4001', { retries: 1, retryDelay: 100, onRetry: () => t.pass() }, () => {});
+});
+
 // test('launch', function * (t) {
 //   t.plan(1);
 
