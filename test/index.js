@@ -1,3 +1,4 @@
+const http = require('http');
 const righto = require('righto');
 const tape = require('tape');
 const test = require('righto-tape');
@@ -17,10 +18,71 @@ tape.onFinish(() => {
   process.exit(0);
 });
 
+test('connect with no callback', function * (t) {
+  t.plan(1);
+
+  try {
+    connect('http://localhost:4001');
+  } catch (error) {
+    t.equal(error.message, 'rqlite.connect requires a callback');
+  }
+});
+
+test('connect to something not rqlite - json', function * (t) {
+  t.plan(1);
+
+  const server = http.createServer((request, response) => {
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end('{"a":1}');
+  }).listen(4002);
+
+  connect('http://localhost:4002', (error, result) => {
+    t.equal(error.message, 'url does not look like an rqlite database');
+    server.close();
+  });
+});
+
+test('connect to something not rqlite - not json', function * (t) {
+  t.plan(1);
+
+  const server = http.createServer((request, response) => {
+    response.end('im not rqlite');
+  }).listen(4002);
+
+  connect('http://localhost:4002', (error, result) => {
+    t.equal(error.message, 'The response body could not be JSON.parsed');
+    server.close();
+  });
+});
+
 test('connect when not running', function * (t) {
   t.plan(1);
 
   connect('http://localhost:4001', function (error) {
+    t.equal(error.message, 'ECONNREFUSED: Could not connect to http://localhost:4001');
+  });
+});
+
+test('connect with retries when not running', function * (t) {
+  t.plan(3);
+
+  const startTime = Date.now();
+  connect('http://localhost:4001', { retries: 3, retryDelay: 100 }, function (error) {
+    const endTime = Date.now();
+    t.ok(endTime - startTime > 300, 'Took more than 300ms to fail');
+    t.ok(endTime - startTime > 300, 'Took less than 1000ms to fail');
+    t.equal(error.message, 'ECONNREFUSED: Could not connect to http://localhost:4001');
+  });
+});
+
+test('connect with retries when not running - with no retires set', function * (t) {
+  t.plan(3);
+
+  const startTime = Date.now();
+  connect('http://localhost:4001', { retries: 3 }, function (error) {
+    const endTime = Date.now();
+    t.ok(endTime - startTime > 300, 'Took more than 300ms to fail');
+    t.ok(endTime - startTime > 300, 'Took less than 1000ms to fail');
     t.equal(error.message, 'ECONNREFUSED: Could not connect to http://localhost:4001');
   });
 });
