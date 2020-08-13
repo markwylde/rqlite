@@ -13,6 +13,19 @@ npm install --save rqlite-fp
 ```
 
 ## Example
+### With promises
+```javascript
+const rqlite = require('rqlite-fp/promises');
+
+(async function () {
+  const connection = await connect('http://localhost:4001')
+  const tableCreated = await execute(connection, 'CREATE TABLE lorem (info TEXT)')
+  const testResults = await getAll(connection, 'SELECT * FROM test')
+
+  console.log(results)
+}())
+```
+
 ### With callbacks
 ```javascript
 const connect = require('rqlite-fp/connect')
